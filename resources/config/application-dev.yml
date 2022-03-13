@@ -1,0 +1,25 @@
+#全局服务配置信息
+server:
+  #文件存储地址。默认为项目根目录：./data/
+  dataPath:
+#WEB服务配置信息
+web:
+  enable: true
+  port: 8080
+#数据库配置
+database:
+  showSql: true
+  dbType: mysql
+  url: root:root@tcp(localhost:3306)/game?charset=utf8mb4&parseTime=True&loc=Local
+#redis配置
+redis:
+  host: 192.168.99.53
+  port: 6379
+  database: 0
+  password: 123456
+#email配置
+email:
+  host: smtp.qiye.aliyun.com
+  port: 465
+  username: dcs@dongs.top
+  password: 1qaz@WSX

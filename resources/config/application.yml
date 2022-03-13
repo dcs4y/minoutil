@@ -1,0 +1,2 @@
+server:
+  active: dev #dev,test,prod
