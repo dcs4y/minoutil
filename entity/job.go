@@ -20,3 +20,7 @@ type Job struct {
 	UpdatedAt   time.Time // 更新时间
 	LastRunTime time.Time // 最后执行时间
 }
+
+func (t Job) TableName() string {
+	return "sys_job"
+}

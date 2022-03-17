@@ -2,7 +2,7 @@ package dbclient
 
 import (
 	"fmt"
-	"mino/common"
+	"game/common"
 	"os"
 	"path/filepath"
 	"strings"
@@ -11,7 +11,7 @@ import (
 
 // 根据表结构生成go对象
 func Test_generate(t *testing.T) {
-	c := generate("db", "sys_", "sys_manager", "sys_resource", "sys_menu", "sys_role")
+	c := generate("db", "sys_", "sys_job")
 	// 保存文件
 	fmt.Println(c)
 	saveFile(c)
@@ -35,14 +35,14 @@ func generate(packageName, prefix string, tableNames ...string) (c string) {
 
 func getTableInfo(t *table) {
 	{
-		sql := "select TABLE_NAME,TABLE_COMMENT from information_schema.TABLES where TABLE_NAME = '%s'"
+		sql := "select TABLE_NAME,TABLE_COMMENT from information_schema.TABLES where TABLE_SCHEMA = 'game' and TABLE_NAME = '%s'"
 		err := DB.Raw(fmt.Sprintf(sql, t.TableName)).Scan(&t).Error
 		if err != nil {
 			panic(err)
 		}
 	}
 	{
-		sql := "select COLUMN_NAME,DATA_TYPE,COLUMN_COMMENT from information_schema.COLUMNS where TABLE_NAME = '%s'"
+		sql := "select COLUMN_NAME,DATA_TYPE,COLUMN_COMMENT from information_schema.COLUMNS where TABLE_SCHEMA = 'game' and TABLE_NAME = '%s'"
 		err := DB.Raw(fmt.Sprintf(sql, t.TableName)).Scan(&t.columns).Error
 		if err != nil {
 			panic(err)
@@ -60,7 +60,7 @@ func generateStruct(t *table) string {
 	for _, column := range t.columns {
 		c += "\t" + column.getGoField() + "\t" + column.getGoType()
 		if column.Comment != "" {
-			c += " // " + column.Comment
+			c += " // " + strings.ReplaceAll(column.Comment, "\n", "")
 		}
 		c += "\n"
 	}

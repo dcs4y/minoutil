@@ -39,10 +39,8 @@ func Start() {
 	g.MaxMultipartMemory = 8 << 20
 
 	// 静态资源
-	g.StaticFS("css", http.Dir(filepath.Join(common.ResourcesPath, "css")))
-	g.StaticFS("js", http.Dir(filepath.Join(common.ResourcesPath, "js")))
 	g.StaticFS("image", http.Dir(filepath.Join(common.ResourcesPath, "image")))
-	g.StaticFS("mino", http.Dir(filepath.Join(common.ResourcesPath, "html")))
+	g.StaticFS("game", http.Dir(filepath.Join(common.ResourcesPath, "page")))
 
 	// 模板设置
 	g.SetFuncMap(template.FuncMap{

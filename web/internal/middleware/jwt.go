@@ -11,8 +11,9 @@ import (
 // https://github.com/dgrijalva/jwt-go
 type JWTClaims struct {
 	jwt.StandardClaims
-	UserID   int    `json:"userId"`
+	UserId   int    `json:"userId"`
 	UserName string `json:"userName"`
+	UserType int    `json:"userType"`
 }
 
 var (
@@ -52,7 +53,7 @@ func verifyAction(strToken string) (*JWTClaims, error) {
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 通过http header中的token解析来认证
-		token := c.Request.Header.Get("Authorization")
+		token := c.Request.Header.Get("token")
 		if token == "" {
 			c.JSON(http.StatusOK, common.ResultErrorMessage("非法访问！"))
 			c.Abort()

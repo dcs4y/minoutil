@@ -3,10 +3,10 @@ package emailclient
 import (
 	"bytes"
 	"fmt"
+	"game/common"
 	"gopkg.in/gomail.v2"
 	"html/template"
 	"log"
-	"mino/common"
 	"net/smtp"
 	"path/filepath"
 	"testing"

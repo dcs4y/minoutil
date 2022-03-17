@@ -2,8 +2,8 @@ package excelutil
 
 import (
 	"fmt"
+	"game/common"
 	"github.com/xuri/excelize/v2"
-	"mino/business/trade"
 	"strconv"
 	"testing"
 	"time"
@@ -79,31 +79,53 @@ func TestWriteExcelSampleList(t *testing.T) {
 	fmt.Println("OK==>" + f.Path)
 }
 
-// 通过结构体标签解析生成列表`excel:"index:'1',title:'标题',width:'25'"`
+type Order struct {
+	OrderNo           string `excel:"title:'订单号',width:'25'"`
+	TopCompanyName    string `excel:"index:'2',title:'公司名称',width:'35'"`
+	MemberName        string `excel:"index:'1',title:'会员姓名'"`
+	Phone             string `excel:"index:'1',title:'手机号'"`
+	MemberStationName string
+	Price             float32 `excel:"index:'5',title:'价格',width:'15'"`
+	OrderStatus       int     `excel:"index:4,title:'状态',width:10"`
+	OrderType         string
+	NodeType          string
+	NodeName          string
+	StartDate         time.Time `excel:"title:'开始时间',width:'25',format:FormatDate"`
+	EndDate           time.Time `excel:"title:'结束时间',width:'25',format:FormatDate"`
+}
+
+func (o Order) FormatDate() string {
+	if o.StartDate.IsZero() {
+		return ""
+	}
+	return o.StartDate.Format(common.DateTimeFormat)
+}
+
+// 通过结构体标签解析生成列表`excel:"index:'1',title:'标题',width:'25',format:FormatDate"`
 func TestWriteExcelStructList(t *testing.T) {
 	fileName := "D:\\usr\\local\\temp\\StructList.xlsx"
 	sheetName := "订单报表"
 
-	var inOrderList []*trade.InOrder
+	var orderList []*Order
 	for i := 0; i < 100; i++ {
 		iStr := strconv.Itoa(i)
-		inOrder := &trade.InOrder{
-			OrderId:        iStr + "#" + time.Now().Format("20060102150405"),
-			TopCompanyName: "东部石油销售有限公司" + iStr,
-			MemberName:     "胡媛爱" + iStr,
+		inOrder := &Order{
+			OrderNo:        iStr + "#" + time.Now().Format("20060102150405"),
+			TopCompanyName: "某某有限公司" + iStr,
+			MemberName:     "爱尔纱" + iStr,
 			Phone:          iStr + "12345678910",
 			Price:          2.2*float32(i) + 1,
 			OrderStatus:    i,
 			StartDate:      time.Now(),
 		}
-		inOrderList = append(inOrderList, inOrder)
+		orderList = append(orderList, inOrder)
 	}
 	//fmt.Println(inOrderList)
 
 	// 初始化一个Excel对象
 	f := excelize.NewFile()
-	addData := WriteExcelStructList(f, sheetName, inOrderList)
-	addData(inOrderList)
+	addData := WriteExcelStructList(f, sheetName, orderList)
+	addData(orderList)
 	if err := f.SaveAs(fileName); err != nil {
 		fmt.Println(err)
 	}
