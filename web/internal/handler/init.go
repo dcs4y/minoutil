@@ -20,9 +20,9 @@ func init() {
 	//}
 }
 
-// HandleWithOutAuth 处理无需鉴权业务
-func HandleWithOutAuth(g *gin.Engine) {
-	// websocket
+// HandleWithPublic 公共访问业务
+func HandleWithPublic(g *gin.Engine) {
+	// websocket。内部处理权限。
 	g.GET("ws", GinWebSocketHandler(WsConnHandler))
 
 	// 重定向到首页
@@ -30,13 +30,19 @@ func HandleWithOutAuth(g *gin.Engine) {
 		c.Redirect(http.StatusMovedPermanently, "/game/index.html")
 	})
 
+	// 图片验证码
+	g.POST("/base/captcha", captcha)
 	// 登录
-	g.POST("/login", func(context *gin.Context) {
-
-	})
+	g.POST("/base/login", login)
 }
 
-// HandleWithAuth 处理需要鉴权业务
+// HandleWithLogin 仅需要登录的业务
+func HandleWithLogin(g *gin.Engine) {
+	// 获取登录菜单
+	g.POST("/menu/getMenu", getMenu)
+}
+
+// HandleWithAuth 需要配置相应权限的业务
 func HandleWithAuth(g *gin.Engine) {
 	// 增加短网址
 	//g.POST("/shortUrl/add", AddShortUrl)

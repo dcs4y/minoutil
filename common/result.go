@@ -1,21 +1,21 @@
 package common
 
 const (
-	CodeSuccess = 10000
+	CodeSuccess = 0
 	CodeError   = 10001
 )
 
 // Result 统计返回格式
 type Result struct {
 	Code    int         `json:"code"`
-	Message string      `json:"message"`
+	Message string      `json:"msg"`
 	Data    interface{} `json:"data"`
 }
 
 // ResultOkData 返回成功数据
 func ResultOkData(date interface{}) (result Result) {
 	result.Code = CodeSuccess
-	result.Message = "操作成功！"
+	result.Message = "OK"
 	result.Data = date
 	return
 }

@@ -5,7 +5,7 @@ server:
 #WEB服务配置信息
 web:
   enable: true
-  port: 8080
+  port: 8888
 #数据库配置
 database:
   showSql: true

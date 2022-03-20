@@ -50,10 +50,12 @@ func Start() {
 	})
 	g.LoadHTMLGlob(filepath.Join(common.ResourcesPath, "templates/*"))
 
-	// 处理无需鉴权业务
-	handler.HandleWithOutAuth(g)
+	// 公共访问业务
+	handler.HandleWithPublic(g)
 	// jwt登录认证
 	g.Use(middleware.JWTAuth())
+	// 仅需要登录的业务
+	handler.HandleWithLogin(g)
 	// 鉴权
 	g.Use(middleware.RBACAuth())
 	// 处理需要鉴权业务

@@ -1,7 +1,7 @@
 package timer
 
 import (
-	"game/entity"
+	"game/entity/model"
 	"game/service/system"
 	"game/utils/logutil"
 	"github.com/robfig/cron/v3"
@@ -18,7 +18,7 @@ func Start() {
 	log.Info("定时任务启动_开始...")
 	t := newTimer()
 	// 查询配置的定时任务并启动
-	jobs := system.GetJobList(entity.Job{State: 1})
+	jobs := system.GetJobList(model.Job{State: 1})
 	if len(jobs) > 0 {
 		v := reflect.ValueOf(t).Elem()
 		for _, job := range jobs {
@@ -76,17 +76,17 @@ func (t *timer) getCron(runWay uint8) *cron.Cron {
 	}
 }
 
-func (t *timer) AddFunc(job *entity.Job, run func()) {
+func (t *timer) AddFunc(job *model.Job, run func()) {
 	eid, err := t.getCron(job.RunWay).AddFunc(job.Expression, run)
 	t.addCallBack(job, eid, err)
 }
 
-func (t *timer) AddJob(job *entity.Job, run cron.Job) {
+func (t *timer) AddJob(job *model.Job, run cron.Job) {
 	eid, err := t.getCron(job.RunWay).AddJob(job.Expression, run)
 	t.addCallBack(job, eid, err)
 }
 
-func (t *timer) addCallBack(job *entity.Job, eid cron.EntryID, err error) {
+func (t *timer) addCallBack(job *model.Job, eid cron.EntryID, err error) {
 	if err != nil {
 		log.Info(err)
 		job.RunState = 0

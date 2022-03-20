@@ -1,8 +1,10 @@
-package entity
+package model
+
+import "game/common"
 
 // Channel 通道账号配置
 type Channel struct {
-	Id             uint64
+	common.BaseModel
 	Code           string //编码
 	Type           string //类型。钉钉DINGDING；邮箱EMAIL；
 	UserName       string //账号
@@ -15,4 +17,8 @@ type Channel struct {
 	JsonConfigDesc string //json配置说明
 	State          bool   //启用状态
 	IsDefault      bool   //是否默认
+}
+
+func (t Channel) TableName() string {
+	return "out_channel"
 }
