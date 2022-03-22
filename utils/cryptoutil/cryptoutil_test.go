@@ -6,7 +6,11 @@
 package cryptoutil
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
 	"encoding/base64"
+	"encoding/pem"
 	"fmt"
 	"log"
 	"testing"
@@ -60,7 +64,9 @@ func Test_md5_check(t *testing.T) {
 }
 
 func Test_keyPairs(t *testing.T) {
-	KeyPairs(521, "keys")
+	prvkey, pubkey := RsaGenerateKey(2048)
+	fmt.Println("私钥：", string(prvkey))
+	fmt.Println("公钥：", string(pubkey))
 }
 
 func Test_rsa(t *testing.T) {
@@ -68,19 +74,31 @@ func Test_rsa(t *testing.T) {
 	//openssl genrsa -out rsa_private_key.pem 1024
 	var privateKey = []byte(`
 -----BEGIN RSA PRIVATE KEY-----
-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
+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
 -----END RSA PRIVATE KEY-----
 `)
 
@@ -88,10 +106,13 @@ zncjRK3pbVkv0KrKfczuJiRlZ7dUzVO0b6QJr8TRAA==
 	//openssl rsa -in rsa_private_key.pem -pubout -out rsa_public_key.pem
 	var publicKey = []byte(`
 -----BEGIN PUBLIC KEY-----
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDcGsUIIAINHfRTdMmgGwLrjzfM
-NSrtgIf4EGsNaYwmC1GjF/bMh0Mcm10oLhNrKNYCTTQVGGIxuc5heKd1gOzb7bdT
-nCDPPZ7oV7p1B9Pud+6zPacoqDz2M24vHFWYY2FbIIJh8fHhKcfXNXOLovdVBE7Z
-y682X1+R1lRK8D+vmQIDAQAB
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu86O3rCE2MdzQLyzQUmw
+p7aWCHOmCKu/JgSufk7LRqsV3ein6Kqxgk5350IhTTvhIW/MvxTRRR20xrfW965h
+PwtpIS6dm8ChDcrjd97p24lXYAazrQ2aIxuZiHG4+scPqRvmfb6jyuQ22PwdtGtJ
+jhXj/Z0INCuNmBhmPDKgF3N96xcamuJYqVmIiD3BDslqHxFKq4N41ECWObgN3tuL
+m4nHLCkf2aBxDmPPWZQeLEcCUQZgWTgx0ix7/XVaH86X4QwvgwzbcW57bKDxLCvf
+lskvoqHnmJCH50ZLOBPiEJWRQ5R8LIneF1Vgl2ytTMvxzscBuUgisBaAP6Wsjgra
+swIDAQAB
 -----END PUBLIC KEY-----
 `)
 
@@ -107,4 +128,36 @@ func Test_sha1(t *testing.T) {
 
 func Test_sha256(t *testing.T) {
 	fmt.Println(Sha256("hello world!", "password"))
+}
+
+func Test_ke(t *testing.T) {
+	prvKey, pubKey := GenRsaKey()
+	fmt.Println(string(prvKey))
+	fmt.Println(string(pubKey))
+}
+
+//RSA公钥私钥产生
+func GenRsaKey() (prvkey, pubkey []byte) {
+	// 生成私钥文件
+	privateKey, err := rsa.GenerateKey(rand.Reader, 1024)
+	if err != nil {
+		panic(err)
+	}
+	derStream := x509.MarshalPKCS1PrivateKey(privateKey)
+	block := &pem.Block{
+		Type:  "RSA PRIVATE KEY",
+		Bytes: derStream,
+	}
+	prvkey = pem.EncodeToMemory(block)
+	publicKey := &privateKey.PublicKey
+	derPkix, err := x509.MarshalPKIXPublicKey(publicKey)
+	if err != nil {
+		panic(err)
+	}
+	block = &pem.Block{
+		Type:  "PUBLIC KEY",
+		Bytes: derPkix,
+	}
+	pubkey = pem.EncodeToMemory(block)
+	return
 }

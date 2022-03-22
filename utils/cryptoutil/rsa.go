@@ -3,52 +3,40 @@
 package cryptoutil
 
 import (
-	"crypto/ecdsa"
-	"crypto/elliptic"
+	"crypto"
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha256"
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
-	"log"
-	"os"
+	"fmt"
 )
 
-// KeyPairs 使用golang标准库ecdsa生成非对称(ES256,ES384,ES521)加密密钥对
-func KeyPairs(size int, keyName string) {
-	var c elliptic.Curve
-	switch size {
-	case 256:
-		c = elliptic.P256()
-	case 384:
-		c = elliptic.P384()
-	case 521:
-		c = elliptic.P521()
-	}
-	privateKey, err := ecdsa.GenerateKey(c, rand.Reader)
+// RsaGenerateKey RSA公钥私钥产生
+func RsaGenerateKey(bits int) (prvkey, pubkey []byte) {
+	// 生成私钥文件
+	privateKey, err := rsa.GenerateKey(rand.Reader, bits)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
-	x509Encoded, _ := x509.MarshalECPrivateKey(privateKey)
-	privateBs := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: x509Encoded})
-	privateFile, err := os.Create(keyName + ".private.pem")
+	derStream := x509.MarshalPKCS1PrivateKey(privateKey)
+	block := &pem.Block{
+		Type:  "RSA PRIVATE KEY",
+		Bytes: derStream,
+	}
+	prvkey = pem.EncodeToMemory(block)
+	publicKey := &privateKey.PublicKey
+	derPkix, err := x509.MarshalPKIXPublicKey(publicKey)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
-	_, err = privateFile.Write(privateBs)
-	if err != nil {
-		log.Fatal(err)
+	block = &pem.Block{
+		Type:  "PUBLIC KEY",
+		Bytes: derPkix,
 	}
-	x509EncodedPub, _ := x509.MarshalPKIXPublicKey(privateKey.Public())
-	publicBs := pem.EncodeToMemory(&pem.Block{Type: "PUBLIC KEY", Bytes: x509EncodedPub})
-	publicKeyFile, err := os.Create(keyName + ".public.pem")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = publicKeyFile.Write(publicBs)
-	if err != nil {
-		log.Fatal(err)
-	}
+	pubkey = pem.EncodeToMemory(block)
+	return
 }
 
 // RsaEncrypt 加密
@@ -83,4 +71,46 @@ func RsaDecrypt(ciphertext []byte, privateKey []byte) ([]byte, error) {
 	}
 	// 解密
 	return rsa.DecryptPKCS1v15(rand.Reader, priv, ciphertext)
+}
+
+// RsaSignWithSha256 签名
+func RsaSignWithSha256(data []byte, keyBytes []byte) []byte {
+	h := sha256.New()
+	h.Write(data)
+	hashed := h.Sum(nil)
+	block, _ := pem.Decode(keyBytes)
+	if block == nil {
+		panic(errors.New("private key error"))
+	}
+	privateKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	if err != nil {
+		fmt.Println("ParsePKCS8PrivateKey err", err)
+		panic(err)
+	}
+
+	signature, err := rsa.SignPKCS1v15(rand.Reader, privateKey, crypto.SHA256, hashed)
+	if err != nil {
+		fmt.Printf("Error from signing: %s\n", err)
+		panic(err)
+	}
+	return signature
+}
+
+// RsaVerySignWithSha256 验证
+func RsaVerySignWithSha256(data, signData, keyBytes []byte) bool {
+	block, _ := pem.Decode(keyBytes)
+	if block == nil {
+		panic(errors.New("public key error"))
+	}
+	pubKey, err := x509.ParsePKIXPublicKey(block.Bytes)
+	if err != nil {
+		panic(err)
+	}
+
+	hashed := sha256.Sum256(data)
+	err = rsa.VerifyPKCS1v15(pubKey.(*rsa.PublicKey), crypto.SHA256, hashed[:], signData)
+	if err != nil {
+		panic(err)
+	}
+	return true
 }
