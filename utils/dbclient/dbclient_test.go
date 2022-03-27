@@ -42,7 +42,7 @@ func getTableInfo(t *table) {
 		}
 	}
 	{
-		sql := "select COLUMN_NAME,DATA_TYPE,COLUMN_COMMENT from information_schema.COLUMNS where TABLE_SCHEMA = 'game' and TABLE_NAME = '%s'"
+		sql := "select COLUMN_NAME,DATA_TYPE,COLUMN_COMMENT from information_schema.COLUMNS where TABLE_SCHEMA = 'game' and TABLE_NAME = '%s' order by ORDINAL_POSITION"
 		err := DB.Raw(fmt.Sprintf(sql, t.TableName)).Scan(&t.columns).Error
 		if err != nil {
 			panic(err)
