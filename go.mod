@@ -1,4 +1,4 @@
-module minoutil
+module github.com/dcs4y/minoutil
 
 go 1.20
 
