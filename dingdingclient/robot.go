@@ -16,25 +16,37 @@ import (
 	"time"
 )
 
+var clients = make(map[string]*hookClient)
+
 // 自定义机器人 https://open.dingtalk.com/document/group/custom-robot-access
-type webhook struct {
+type hookClient struct {
 	url    string // Webhook地址 https://oapi.dingtalk.com/robot/send?access_token=ca6441d14175831d2f1e4e5409421b7a1a7859824c2cbb59cd6a705f1f318928
 	secret string // 密钥 SEC8864fda8960e963bbac681d27aab862957666aa97b5f0e449e9082a6fd6b26ea
 }
 
-func NewWebhook(url, secret string) *webhook {
-	return &webhook{
+func NewWebhook(url, secret string) *hookClient {
+	client := &hookClient{
 		url:    url,
 		secret: secret,
 	}
+	clients[""] = client
+	return client
+}
+
+func GetClientByName(name string) *hookClient {
+	return clients[name]
+}
+
+func GetClient() *hookClient {
+	return clients[""]
 }
 
 // Webhook签名算法：把timestamp+"\n"+密钥当做签名字符串，使用HmacSHA256算法计算签名，然后进行Base64 encode，最后再把签名参数再进行urlEncode，得到最终的签名（需要使用UTF-8字符集）。
-func (webhook *webhook) sign() string {
+func (client *hookClient) sign() string {
 	timestamp := time.Now().UnixMilli()
-	signStr := fmt.Sprintf("%d\n%s", timestamp, webhook.secret)
+	signStr := fmt.Sprintf("%d\n%s", timestamp, client.secret)
 	// Create a new HMAC by defining the hash type and the key (as byte array)
-	h := hmac.New(sha256.New, []byte(webhook.secret))
+	h := hmac.New(sha256.New, []byte(client.secret))
 	// Write Data to it
 	h.Write([]byte(signStr))
 	// base64
@@ -42,11 +54,11 @@ func (webhook *webhook) sign() string {
 	// urlEncode
 	sign = url.QueryEscape(sign)
 	// 拼接最终请求地址
-	return fmt.Sprintf(webhook.url+"&timestamp=%d&sign=%s", timestamp, sign)
+	return fmt.Sprintf(client.url+"&timestamp=%d&sign=%s", timestamp, sign)
 }
 
-func (webhook *webhook) send(param map[string]interface{}) error {
-	bootUrl := webhook.sign()
+func (client *hookClient) send(param map[string]interface{}) error {
+	bootUrl := client.sign()
 	b, err := json.Marshal(param)
 	if err != nil {
 		return err
@@ -128,7 +140,7 @@ type FeedCardBody struct {
 }
 
 // Send 发送自定义机器人消息
-func (webhook *webhook) Send(at *At, body interface{}) error {
+func (client *hookClient) Send(at *At, body interface{}) error {
 	param := make(map[string]interface{})
 	if at != nil {
 		param["at"] = at
@@ -150,5 +162,5 @@ func (webhook *webhook) Send(at *At, body interface{}) error {
 	}
 	param["msgtype"] = messageType
 	param[messageType] = body
-	return webhook.send(param)
+	return client.send(param)
 }
