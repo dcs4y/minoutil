@@ -28,7 +28,7 @@ func InitLog(config LogConfig) {
 	// 在输出日志中添加文件名和方法信息
 	//Log.SetReportCaller(true)
 	// 设置日志输出格式
-	log.SetFormatter(&logrus.TextFormatter{
+	log.SetFormatter(&logrus.JSONFormatter{
 		TimestampFormat: time.DateTime, // 设置json里的日期输出格式
 	})
 	// 重定向输出
