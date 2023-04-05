@@ -42,5 +42,11 @@ func GetConfigByName(name string, key string, value interface{}) error {
 	if !ok {
 		return errors.New("not init config " + name)
 	}
-	return v.UnmarshalKey(key, value)
+	var err error
+	if key == "" {
+		err = v.Unmarshal(value)
+	} else {
+		err = v.UnmarshalKey(key, value)
+	}
+	return err
 }

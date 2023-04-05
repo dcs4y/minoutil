@@ -169,7 +169,7 @@ func buildObjectInfo(bucketName string, object minio.ObjectInfo) *objectInfo {
 // GetObjectUrl 生成分享链接。生成公开桶里文件连接时，second=0。
 func (mb *minioBucket) GetObjectUrl(objectName, showName string, second int64, inline bool) (*url.URL, error) {
 	if second == 0 {
-		config := common.WS.MinioModel
+		config := common.WS.Minio
 		scheme := "http"
 		if config.UseSSL {
 			scheme = "https"

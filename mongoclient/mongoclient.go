@@ -2,6 +2,7 @@ package mongoclient
 
 import (
 	"context"
+	"fmt"
 	"github.com/qiniu/qmgo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -36,7 +37,7 @@ func NewClient(name string, config MongoConfig) *mongoClient {
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	mgClient, err := qmgo.NewClient(ctx, &qmgo.Config{Uri: config.Uri, Auth: &qmgo.Credential{Username: config.Username, Password: config.Password}})
 	if err != nil {
-		panic(err)
+		fmt.Println("NewMongoClient:", err)
 	}
 	client := &mongoClient{
 		mgClient.Database(config.Database),
