@@ -1,7 +1,7 @@
 package baseModel
 
 const (
-	CodeSuccess = 1000
+	CodeSuccess = 0
 	CodeError   = 9999
 )
 

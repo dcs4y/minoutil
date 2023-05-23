@@ -21,26 +21,26 @@ const (
 	startTime   int64 = 1650067200000 // 2022.04.16 如果在程序跑了一段时间修改了epoch这个值 可能会导致生成相同的ID
 )
 
-type worker struct {
+type Worker struct {
 	mu        sync.Mutex
 	timestamp int64
 	workerId  int64
 	number    int64
 }
 
-func NewWorker(workerId int64) (*worker, error) {
+func NewWorker(workerId int64) (*Worker, error) {
 	if workerId < 0 || workerId > workerMax {
 		return nil, errors.New("非法的WorkerID！")
 	}
 	// 生成一个新节点
-	return &worker{
+	return &Worker{
 		timestamp: 0,
 		workerId:  workerId,
 		number:    0,
 	}, nil
 }
 
-func (w *worker) GetId() int64 {
+func (w *Worker) GetId() int64 {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 	now := time.Now().UnixNano() / 1e6
