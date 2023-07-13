@@ -14,6 +14,9 @@ type Time struct {
 
 // MarshalJSON 为 Time 重写 MarshaJSON 方法，在此方法中实现自定义格式的转换；
 func (t Time) MarshalJSON() ([]byte, error) {
+	if t.IsZero() {
+		return []byte(`""`), nil
+	}
 	output := fmt.Sprintf("\"%s\"", t.Format(time.DateTime))
 	return []byte(output), nil
 }
@@ -71,5 +74,8 @@ func (t *Time) Scan(v interface{}) error {
 
 // String 方法
 func (t Time) String() string {
+	if t.IsZero() {
+		return ""
+	}
 	return t.Time.Format(time.DateTime)
 }
