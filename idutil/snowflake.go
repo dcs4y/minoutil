@@ -2,6 +2,7 @@ package idutil
 
 import (
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 )
@@ -57,4 +58,9 @@ func (w *Worker) GetId() int64 {
 	}
 	ID := int64((now-startTime)<<timeShift | (w.workerId << workerShift) | (w.number))
 	return ID
+}
+
+func (w *Worker) GetIdString() string {
+	id := w.GetId()
+	return fmt.Sprintf("%d", id)
 }

@@ -17,6 +17,6 @@ func (pg PageParam) GetStart() int {
 
 // IdParam 通用ID参数
 type IdParam struct {
-	Id  int64   `json:"id"`
-	Ids []int64 `json:"ids"`
+	Id  string   `json:"id"`
+	Ids []string `json:"ids"`
 }
