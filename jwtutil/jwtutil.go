@@ -9,7 +9,7 @@ import (
 // https://github.com/dgrijalva/jwt-go
 type JWTClaims struct {
 	jwt.StandardClaims
-	UserId   int64  `json:"userId"`
+	UserId   string `json:"userId"`
 	UserName string `json:"userName"`
 	UserType int    `json:"userType"`
 	RoleId   string `json:"roleId"`

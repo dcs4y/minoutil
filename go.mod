@@ -1,4 +1,4 @@
-module github.com/dcs4y/minoutil
+module github.com/dcs4y/minoutil/v2
 
 go 1.20
 
