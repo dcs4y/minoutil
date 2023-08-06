@@ -3,7 +3,7 @@ package geoutil
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/dcs4y/minoutil/netutil"
+	"github.com/dcs4y/minoutil/v2/netutil"
 )
 
 // AmapClient 高德地图工具

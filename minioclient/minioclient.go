@@ -2,8 +2,8 @@ package minioclient
 
 import (
 	"context"
-	"github.com/dcs4y/minoutil/logutil"
-	"github.com/dcs4y/minoutil/netutil"
+	"github.com/dcs4y/minoutil/v2/logutil"
+	"github.com/dcs4y/minoutil/v2/netutil"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"io"

@@ -1,7 +1,7 @@
 package weatherclient
 
 import (
-	"github.com/dcs4y/minoutil/netutil"
+	"github.com/dcs4y/minoutil/v2/netutil"
 )
 
 // https://openweathermap.org/

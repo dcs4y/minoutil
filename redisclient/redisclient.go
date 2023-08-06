@@ -2,7 +2,7 @@ package redisclient
 
 import (
 	"errors"
-	"github.com/dcs4y/minoutil/logutil"
+	"github.com/dcs4y/minoutil/v2/logutil"
 	"github.com/gomodule/redigo/redis"
 	"math"
 	"strconv"

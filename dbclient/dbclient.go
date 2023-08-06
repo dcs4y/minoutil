@@ -2,7 +2,7 @@ package dbclient
 
 import (
 	"fmt"
-	"github.com/dcs4y/minoutil/logutil"
+	"github.com/dcs4y/minoutil/v2/logutil"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
