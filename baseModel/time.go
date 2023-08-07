@@ -79,3 +79,11 @@ func (t Time) String() string {
 	}
 	return t.Time.Format(time.DateTime)
 }
+
+func Now() Time {
+	return Time{Time: time.Now()}
+}
+
+func NewTime(t time.Time) Time {
+	return Time{Time: t}
+}
