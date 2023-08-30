@@ -2,6 +2,7 @@ package baseModel
 
 const (
 	CodeSuccess = 0
+	TokenError  = 1000
 	CodeError   = 9999
 )
 
@@ -62,7 +63,7 @@ func ResultErrorMessage(message string) (result Result) {
 
 // ResultErrorReload 返回错误信息并退出登录状态
 func ResultErrorReload(message string) (result Result) {
-	result.Code = CodeError
+	result.Code = TokenError
 	result.Message = message
 	result.Data = map[string]bool{
 		"reload": true,
