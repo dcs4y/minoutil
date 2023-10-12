@@ -1,5 +1,7 @@
 package baseModel
 
+import "errors"
+
 // PageParam 分页参数
 type PageParam struct {
 	PageStart  int `gorm:"-"`
@@ -19,4 +21,19 @@ func (pg PageParam) GetStart() int {
 type IdParam struct {
 	Id  string   `json:"id"`
 	Ids []string `json:"ids"`
+}
+
+func (param IdParam) Verify() error {
+	if param.Id == "" {
+		if len(param.Ids) == 0 {
+			return errors.New("ID不能为空！")
+		} else {
+			for _, id := range param.Ids {
+				if id == "" {
+					return errors.New("ID不能为空！")
+				}
+			}
+		}
+	}
+	return nil
 }
