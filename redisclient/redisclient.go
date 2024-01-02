@@ -171,6 +171,19 @@ func (rc *redisClient) Lock(key string, value interface{}) (bool, error) {
 	return false, err
 }
 
+// LockExpire 简单锁。只有在 key 不存在时设置 key 的值。删除key即为解锁，否则超时自动解锁。
+func (rc *redisClient) LockExpire(key string, value interface{}, second int) (bool, error) {
+	rdConn := rc.pool.Get()
+	// 函数运行结束 ，把连接放回连接池
+	defer rdConn.Close()
+	m, err := rdConn.Do("SETNX", key, value)
+	if m.(int64) == 1 {
+		_, err = rdConn.Do("expire", key, second)
+		return true, err
+	}
+	return false, err
+}
+
 // SetObjects 设置多key的值
 func (rc *redisClient) SetObjects(kv ...interface{}) error {
 	if len(kv)%2 != 0 {

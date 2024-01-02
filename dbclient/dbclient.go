@@ -3,6 +3,7 @@ package dbclient
 import (
 	"fmt"
 	"github.com/dcs4y/minoutil/v2/logutil"
+	"github.com/glebarez/sqlite"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -38,6 +39,8 @@ func NewClient(name string, config DBConfig) (DB *gorm.DB) {
 	var dialect gorm.Dialector
 	if config.BbType == "mysql" {
 		dialect = mysql.Open(config.Url)
+	} else if config.BbType == "sqlite" {
+		dialect = sqlite.Open(config.Url)
 	} else {
 		return
 	}
