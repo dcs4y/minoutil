@@ -2,8 +2,9 @@ package redisclient
 
 import (
 	"fmt"
-	"github.com/garyburd/redigo/redis"
 	"testing"
+
+	"github.com/gomodule/redigo/redis"
 )
 
 // Redis单连接测试
