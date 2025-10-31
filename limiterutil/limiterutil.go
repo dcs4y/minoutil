@@ -1,8 +1,9 @@
 package limiterutil
 
 import (
-	"golang.org/x/time/rate"
 	"sync"
+
+	"golang.org/x/time/rate"
 )
 
 var limiterMap = make(map[string]*rate.Limiter)

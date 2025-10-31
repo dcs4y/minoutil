@@ -2,7 +2,8 @@ package kafkaclient
 
 import (
 	"fmt"
-	"github.com/Shopify/sarama"
+
+	"github.com/IBM/sarama"
 )
 
 type KafkaHandler interface {

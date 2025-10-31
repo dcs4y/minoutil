@@ -2,16 +2,17 @@ package minioclient
 
 import (
 	"context"
-	"github.com/dcs4y/minoutil/v2/logutil"
-	"github.com/dcs4y/minoutil/v2/netutil"
-	"github.com/minio/minio-go/v7"
-	"github.com/minio/minio-go/v7/pkg/credentials"
 	"io"
 	"mino/common"
 	"net/url"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/dcs4y/minoutil/v2/logutil"
+	"github.com/dcs4y/minoutil/v2/netutil"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
 var clients = make(map[string]*minioClient)

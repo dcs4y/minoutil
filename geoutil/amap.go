@@ -3,6 +3,7 @@ package geoutil
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/dcs4y/minoutil/v2/netutil"
 )
 

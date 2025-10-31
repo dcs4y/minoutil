@@ -1,11 +1,12 @@
 package logutil
 
 import (
-	"github.com/sirupsen/logrus"
-	"gopkg.in/natefinch/lumberjack.v2"
 	"io"
 	"os"
 	"time"
+
+	"github.com/sirupsen/logrus"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 var log = logrus.New()

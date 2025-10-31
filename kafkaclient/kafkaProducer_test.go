@@ -1,9 +1,10 @@
 package kafkaclient
 
 import (
-	"github.com/Shopify/sarama"
 	"testing"
 	"time"
+
+	"github.com/IBM/sarama"
 )
 
 func TestKafkaProducer(t *testing.T) {

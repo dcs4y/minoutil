@@ -1,13 +1,14 @@
 package collyutil
 
 import (
-	"github.com/gocolly/colly"
-	"github.com/gocolly/colly/extensions"
 	"log"
 	"net"
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/gocolly/colly"
+	"github.com/gocolly/colly/extensions"
 )
 
 type CollectorConfig struct {

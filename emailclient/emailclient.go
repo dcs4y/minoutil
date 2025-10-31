@@ -6,9 +6,10 @@ package emailclient
 import (
 	"bytes"
 	"errors"
-	"gopkg.in/gomail.v2"
 	"html/template"
 	"log"
+
+	"gopkg.in/gomail.v2"
 )
 
 var clients = make(map[string]*emailClient)

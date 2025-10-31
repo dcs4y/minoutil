@@ -2,9 +2,10 @@ package cacheclient
 
 import (
 	"fmt"
-	"github.com/patrickmn/go-cache"
 	"testing"
 	"time"
+
+	"github.com/patrickmn/go-cache"
 )
 
 func Test_cache(t *testing.T) {

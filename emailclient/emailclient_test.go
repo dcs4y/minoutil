@@ -3,10 +3,11 @@ package emailclient
 import (
 	"bytes"
 	"fmt"
-	"gopkg.in/gomail.v2"
 	"log"
 	"net/smtp"
 	"testing"
+
+	"gopkg.in/gomail.v2"
 )
 
 const (

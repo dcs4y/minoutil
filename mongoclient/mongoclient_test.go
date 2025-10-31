@@ -3,8 +3,9 @@ package mongoclient
 import (
 	"context"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson"
 	"testing"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func Test_GetCollection(t *testing.T) {

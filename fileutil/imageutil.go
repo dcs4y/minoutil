@@ -2,8 +2,6 @@ package fileutil
 
 import (
 	"errors"
-	"github.com/fogleman/gg"
-	"github.com/nfnt/resize"
 	"image"
 	"image/color"
 	"image/draw"
@@ -11,6 +9,9 @@ import (
 	"image/jpeg"
 	"image/png"
 	"io"
+
+	"github.com/fogleman/gg"
+	"github.com/nfnt/resize"
 )
 
 // ResizeImage 图片缩放

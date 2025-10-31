@@ -2,31 +2,16 @@ package redisclient
 
 import (
 	"fmt"
-	"github.com/garyburd/redigo/redis"
 	"testing"
 )
 
-// Redis单连接测试
-func Test_conn(t *testing.T) {
-	setDB := redis.DialDatabase(0)
-	setPassword := redis.DialPassword("jgqhRedis2020")
-	conn, err := redis.Dial("tcp", "119.23.29.107:6379", setDB, setPassword)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer conn.Close()
-	keys, err := redis.Strings(conn.Do("KEYS", "RISK:install:DN_*"))
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	conn.Send("MULTI")
-	for i, key := range keys {
-		fmt.Println("删除KEY：", i, key)
-		conn.Send("DEL", key)
-	}
-	fmt.Println(conn.Do("EXEC"))
+func init() {
+	NewClient("", RedisConfig{
+		Host:     "192.168.4.28",
+		Port:     6379,
+		Database: 0,
+		Password: "123456",
+	})
 }
 
 func TestRedis(t *testing.T) {

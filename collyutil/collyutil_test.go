@@ -1,11 +1,12 @@
 package collyutil
 
 import (
-	"github.com/gocolly/colly"
-	"go.uber.org/zap"
 	"log"
 	"strings"
 	"testing"
+
+	"github.com/gocolly/colly"
+	"go.uber.org/zap"
 )
 
 func Test_colly(t *testing.T) {

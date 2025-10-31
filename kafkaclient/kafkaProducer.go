@@ -2,8 +2,9 @@ package kafkaclient
 
 import (
 	"fmt"
-	"github.com/Shopify/sarama"
 	"time"
+
+	"github.com/IBM/sarama"
 )
 
 var client sarama.SyncProducer

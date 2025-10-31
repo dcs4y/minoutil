@@ -1,10 +1,11 @@
 package fileutil
 
 import (
-	qrEncode "github.com/skip2/go-qrcode"
-	qrDecode "github.com/tuotoo/qrcode"
 	"io"
 	"os"
+
+	qrEncode "github.com/skip2/go-qrcode"
+	qrDecode "github.com/tuotoo/qrcode"
 )
 
 // https://github.com/skip2/go-qrcode

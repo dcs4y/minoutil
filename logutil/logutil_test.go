@@ -1,8 +1,9 @@
 package logutil
 
 import (
-	"github.com/sirupsen/logrus"
 	"testing"
+
+	"github.com/sirupsen/logrus"
 )
 
 func TestLogger(t *testing.T) {

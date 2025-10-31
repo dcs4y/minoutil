@@ -1,8 +1,9 @@
 package cacheclient
 
 import (
-	"github.com/patrickmn/go-cache"
 	"time"
+
+	"github.com/patrickmn/go-cache"
 )
 
 // Cache 带过期时间的简单缓存
