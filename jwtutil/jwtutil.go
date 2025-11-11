@@ -17,6 +17,7 @@ var ContextJWTClaims = "claims"
 // https://github.com/golang-jwt/jwt
 type JWTClaims struct {
 	jwt.MapClaims
+	ExpiresAt  int64  `json:"expiresAt"` //有效期。Unix时间(秒)。
 	UserId     string `json:"userId"`
 	UserName   string `json:"userName"`
 	UserType   int    `json:"userType"`
@@ -69,16 +70,16 @@ func VerifyRS256Token(tokenString string, publicKey *rsa.PublicKey) (JWTClaims, 
 }
 
 // GetClaims 从上下文中获取登录信息
-func GetClaims(c *gin.Context) *JWTClaims {
+func GetClaims(c *gin.Context) JWTClaims {
 	v, _ := c.Get(ContextJWTClaims)
-	return v.(*JWTClaims)
+	return v.(JWTClaims)
 }
 
-func GetClaimsWithCheck(c *gin.Context) (*JWTClaims, bool) {
+func GetClaimsWithCheck(c *gin.Context) (claims JWTClaims, b bool) {
 	v, b := c.Get(ContextJWTClaims)
 	if b {
-		return v.(*JWTClaims), b
+		return v.(JWTClaims), b
 	} else {
-		return nil, b
+		return claims, b
 	}
 }

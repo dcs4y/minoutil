@@ -7,7 +7,7 @@ import (
 
 func init() {
 	NewClient("", RedisConfig{
-		Host:     "192.168.4.28",
+		Host:     "192.168.4.99",
 		Port:     6379,
 		Database: 0,
 		Password: "123456",
