@@ -101,6 +101,8 @@ func (hc *HttpClient) AddParam(key, value string) *HttpClient {
 
 func (hc *HttpClient) SetBody(body any) *HttpClient {
 	switch body.(type) {
+	case io.Reader:
+		hc.body = body.(io.Reader)
 	case []byte:
 		hc.body = bytes.NewReader(body.([]byte))
 	case string:
