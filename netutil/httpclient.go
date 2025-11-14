@@ -136,7 +136,7 @@ func (hc *HttpClient) EncodeUrl() *HttpClient {
 		if err != nil {
 			hc.error = errors.Join(hc.error, err)
 		} else {
-			hc.url = u.Path + "?" + u.Query().Encode()
+			hc.url = hc.url[:strings.Index(hc.url, "?")+1] + u.Query().Encode()
 		}
 	}
 	return hc
