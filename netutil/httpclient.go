@@ -198,7 +198,7 @@ func (hc *HttpClient) Do(method httpMethod) (response *HttpResponse, err error) 
 			if strings.ContainsRune(hc.url, '?') {
 				hc.url += paramPair
 			} else {
-				hc.url += "?" + paramPair
+				hc.url += "?" + paramPair[1:]
 			}
 		}
 		request, err = http.NewRequest(http.MethodGet, hc.url, nil)
