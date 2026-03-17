@@ -284,5 +284,5 @@ func (hr *HttpResponse) ToMap() (result map[string]interface{}, err error) {
 }
 
 func (hr *HttpResponse) ToAny(t any) error {
-	return json.Unmarshal(hr.Body, &t)
+	return json.Unmarshal(hr.Body, &t, json.Deterministic(true))
 }
