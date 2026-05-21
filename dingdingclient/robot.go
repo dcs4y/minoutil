@@ -149,18 +149,23 @@ func (client *hookClient) Send(at *At, body interface{}) error {
 	switch body.(type) {
 	case TextBody:
 		messageType = "text"
+		param[messageType] = body
 	case LinkBody:
 		messageType = "link"
+		param[messageType] = body
 	case MarkdownBody:
 		messageType = "markdown"
+		param[messageType] = body
 	case ActionCardWholeBody:
 		messageType = "actionCard"
+		param[messageType] = body
 	case ActionCardSingleBody:
 		messageType = "actionCard"
+		param[messageType] = body
 	case FeedCardBody:
 		messageType = "feedCard"
+		param[messageType] = map[string][]interface{}{"links": {body}}
 	}
 	param["msgtype"] = messageType
-	param[messageType] = body
 	return client.send(param)
 }
