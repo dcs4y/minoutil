@@ -3,7 +3,6 @@ package minioclient
 import (
 	"context"
 	"io"
-	"mino/common"
 	"net/url"
 	"strings"
 	"sync"
@@ -170,12 +169,7 @@ func buildObjectInfo(bucketName string, object minio.ObjectInfo) *objectInfo {
 // GetObjectUrl 生成分享链接。生成公开桶里文件连接时，second=0。
 func (mb *minioBucket) GetObjectUrl(objectName, showName string, second int64, inline bool) (*url.URL, error) {
 	if second == 0 {
-		config := common.WS.Minio
-		scheme := "http"
-		if config.UseSSL {
-			scheme = "https"
-		}
-		return url.Parse(scheme + "://" + config.Endpoint + "/" + mb.BucketName + "/" + objectName)
+		return url.Parse(mb.Client.EndpointURL().String() + "/" + mb.BucketName + "/" + objectName)
 	}
 	// 额外的响应头，支持response-expires， response-content-type， response-cache-control， response-content-disposition。
 	reqParams := make(url.Values)

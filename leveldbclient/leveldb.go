@@ -1,9 +1,10 @@
 package leveldbclient
 
 import (
+	"log"
+
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/util"
-	"log"
 )
 
 var client *leveldbClient

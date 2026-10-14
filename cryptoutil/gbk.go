@@ -2,9 +2,10 @@ package cryptoutil
 
 import (
 	"bytes"
+	"io/ioutil"
+
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/transform"
-	"io/ioutil"
 )
 
 // UTF82GBK : transform UTF8 rune into GBK byte array

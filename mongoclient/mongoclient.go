@@ -6,12 +6,14 @@ import (
 	"log"
 	"time"
 
-	"github.com/qiniu/qmgo"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/mongo/readpref"
 )
 
-// https://www.cnblogs.com/qiniu/p/13492504.html
+// https://pkg.go.dev/go.mongodb.org/mongo-driver/v2@v2.9.2#section-readme
+// https://www.mongodb.com/zh-cn/docs/drivers/go/current/
 
 var clients = make(map[string]*mongoClient)
 
@@ -23,7 +25,7 @@ type MongoConfig struct {
 }
 
 type mongoClient struct {
-	database *qmgo.Database
+	database *mongo.Database
 }
 
 func GetClientByName(name string) *mongoClient {
@@ -35,8 +37,7 @@ func GetClient() *mongoClient {
 }
 
 func NewClient(name string, config MongoConfig) *mongoClient {
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	mgClient, err := qmgo.NewClient(ctx, &qmgo.Config{Uri: config.Uri, Auth: &qmgo.Credential{Username: config.Username, Password: config.Password}})
+	mgClient, err := mongo.Connect(options.Client().SetTimeout(10 * time.Second).ApplyURI(config.Uri).SetAuth(options.Credential{Username: config.Username, Password: config.Password}))
 	if err != nil {
 		fmt.Println("NewMongoClient:", err)
 	}
@@ -47,15 +48,42 @@ func NewClient(name string, config MongoConfig) *mongoClient {
 	return client
 }
 
-func (mc *mongoClient) GetCollection(collectionName string) *qmgo.Collection {
+func (mc *mongoClient) GetCollection(collectionName string) *mongo.Collection {
 	return mc.database.Collection(collectionName)
 }
 
-func (mc *mongoClient) Save(collection string, m bson.M) string {
-	result, err := mc.GetCollection(collection).InsertOne(context.TODO(), m)
+func (mc *mongoClient) SaveM(collection string, m bson.M) any {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	result, err := mc.GetCollection(collection).InsertOne(ctx, m)
 	if err != nil {
 		log.Println(err.Error())
 	}
-	id := result.InsertedID
-	return id.(primitive.ObjectID).Hex()
+	return result.InsertedID
+}
+
+func (mc *mongoClient) SaveD(collection string, d bson.D) any {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	result, err := mc.GetCollection(collection).InsertOne(ctx, d)
+	if err != nil {
+		log.Println(err.Error())
+	}
+	return result.InsertedID
+}
+
+func (mc *mongoClient) Disconnect() {
+	defer func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+		defer cancel()
+		if err := mc.database.Client().Disconnect(ctx); err != nil {
+			panic(err)
+		}
+	}()
+}
+
+func (mc *mongoClient) Ping() {
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	_ = mc.database.Client().Ping(ctx, readpref.Primary())
 }

@@ -2,17 +2,18 @@ package dbclient
 
 import (
 	"fmt"
+	"io"
+	"log"
+	"os"
+	"sync"
+	"time"
+
 	"github.com/dcs4y/minoutil/v2/logutil"
 	"github.com/glebarez/sqlite"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-	"io"
-	"log"
-	"os"
-	"sync"
-	"time"
 )
 
 var (

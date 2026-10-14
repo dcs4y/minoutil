@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"testing"
 
-	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 func Test_GetCollection(t *testing.T) {
 	collectionName := "DeviceMessage"
 	c := GetClient().GetCollection(collectionName)
-	t.Log("collectionName=", c.GetCollectionName())
+	t.Log("collectionName=", c.Name())
 	m := bson.M{}
 	m["name"] = "d2"
 	m["a"] = "a"
@@ -27,9 +27,9 @@ func Test_GetCollection(t *testing.T) {
 	// 查询
 	filter := make(map[string]interface{})
 	filter["name"] = "d"
-	q := c.Find(ctx, filter)
+	cur, err := c.Find(ctx, filter)
 	var list []map[string]interface{}
-	err = q.All(&list)
+	err = cur.All(ctx, &list)
 	if err != nil {
 		fmt.Println(err)
 	}
