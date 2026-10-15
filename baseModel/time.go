@@ -63,7 +63,7 @@ func (t Time) Value() (driver.Value, error) {
 }
 
 // Scan 为 Time 实现 Scan 方法，读取数据库时会调用该方法将时间数据转换成自定义时间类型；
-func (t *Time) Scan(v interface{}) error {
+func (t *Time) Scan(v any) error {
 	value, ok := v.(time.Time)
 	if ok {
 		*t = Time{Time: value}

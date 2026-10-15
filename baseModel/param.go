@@ -1,6 +1,9 @@
 package baseModel
 
-import "errors"
+import (
+	"errors"
+	"slices"
+)
 
 // PageParam 分页参数
 type PageParam struct {
@@ -25,14 +28,8 @@ type IdParam struct {
 
 func (param IdParam) Verify() error {
 	if param.Id == "" {
-		if len(param.Ids) == 0 {
+		if len(param.Ids) == 0 || slices.Contains(param.Ids, param.Id) {
 			return errors.New("ID不能为空！")
-		} else {
-			for _, id := range param.Ids {
-				if id == "" {
-					return errors.New("ID不能为空！")
-				}
-			}
 		}
 	}
 	return nil

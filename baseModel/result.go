@@ -8,13 +8,13 @@ const (
 
 // Result 统计返回格式
 type Result struct {
-	Code    int         `json:"code"` // 状态码
-	Message string      `json:"msg"`  // 返回信息
-	Data    interface{} `json:"data"` // 返回数据
+	Code    int    `json:"code"` // 状态码
+	Message string `json:"msg"`  // 返回信息
+	Data    any    `json:"data"` // 返回数据
 }
 
 // ResultOkData 返回成功数据
-func ResultOkData(data interface{}) (result Result) {
+func ResultOkData(data any) (result Result) {
 	result.Code = CodeSuccess
 	result.Message = "操作成功!"
 	result.Data = data
@@ -22,10 +22,10 @@ func ResultOkData(data interface{}) (result Result) {
 }
 
 // ResultOkPageData 返回成功的分页数据
-func ResultOkPageData(list interface{}, total int64) (result Result) {
+func ResultOkPageData(list any, total int64) (result Result) {
 	result.Code = CodeSuccess
 	result.Message = "操作成功!"
-	result.Data = map[string]interface{}{
+	result.Data = map[string]any{
 		"list":  list,
 		"total": total,
 	}
@@ -47,7 +47,7 @@ func ResultOkMessage(message string) (result Result) {
 }
 
 // ResultOkDataMessage 返回成功的数据及消息
-func ResultOkDataMessage(data interface{}, message string) (result Result) {
+func ResultOkDataMessage(data any, message string) (result Result) {
 	result.Code = CodeSuccess
 	result.Message = message
 	result.Data = data
