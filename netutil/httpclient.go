@@ -54,6 +54,30 @@ func NewHttpClient(url string) *HttpClient {
 	}
 }
 
+func (hc *HttpClient) AddQueryAll(param map[string][]string) *HttpClient {
+	if param != nil {
+		var query strings.Builder
+		for k, vs := range param {
+			for _, v := range vs {
+				query.WriteString("&" + k + "=" + v)
+			}
+		}
+		if !strings.ContainsRune(hc.url, '?') {
+			hc.url += "?"
+		}
+		q := query.String()
+		if strings.HasSuffix(hc.url, "?") {
+			q = q[1:]
+		}
+		hc.url += q
+	}
+	return hc
+}
+
+func (hc *HttpClient) AddQuery(key, value string) *HttpClient {
+	return hc.AddQueryAll(map[string][]string{key: {value}})
+}
+
 func (hc *HttpClient) SetTransport(transport *http.Transport) *HttpClient {
 	hc.transport = transport
 	return hc
