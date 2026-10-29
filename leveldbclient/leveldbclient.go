@@ -2,21 +2,32 @@ package leveldbclient
 
 import (
 	"log"
+	"sync"
 
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/util"
 )
 
-var client *leveldbClient
+// 写优于读，有文件合并，无事务，数据量大了性能有影响。读多的场景使用boltdb。
+var (
+	client *leveldbClient
+	lock   sync.RWMutex
+)
 
 func NewClient(path string) *leveldbClient {
+	lock.RLock()
+	defer lock.RUnlock()
+	if client != nil {
+		return client
+	}
 	// https://github.com/syndtr/goleveldb
 	db, err := leveldb.OpenFile(path, nil)
 	if err != nil {
 		log.Println("leveldb打开文件失败：" + err.Error())
 		return nil
 	}
-	return &leveldbClient{db: db}
+	client = &leveldbClient{db: db}
+	return client
 }
 
 func GetClient() *leveldbClient {
@@ -24,7 +35,8 @@ func GetClient() *leveldbClient {
 }
 
 type leveldbClient struct {
-	db *leveldb.DB
+	db   *leveldb.DB
+	lock sync.RWMutex
 }
 
 // Close 关闭数据库
@@ -45,6 +57,8 @@ func (client *leveldbClient) GetString(key string) (string, error) {
 
 // GetMap 查询数据库所有数据
 func (client *leveldbClient) GetMap() (map[string][]byte, error) {
+	client.lock.RLock()
+	defer client.lock.RUnlock()
 	result := make(map[string][]byte)
 	it := client.db.NewIterator(nil, nil)
 	for it.Next() {
@@ -57,6 +71,8 @@ func (client *leveldbClient) GetMap() (map[string][]byte, error) {
 
 // GetMapString 查询数据库所有数据，值为string
 func (client *leveldbClient) GetMapString() (map[string]string, error) {
+	client.lock.RLock()
+	defer client.lock.RUnlock()
 	result := make(map[string]string)
 	it := client.db.NewIterator(nil, nil)
 	for it.Next() {
@@ -69,6 +85,8 @@ func (client *leveldbClient) GetMapString() (map[string]string, error) {
 
 // GetMapPrefix 根据前缀查询值
 func (client *leveldbClient) GetMapPrefix(prefix string) (map[string][]byte, error) {
+	client.lock.RLock()
+	defer client.lock.RUnlock()
 	result := make(map[string][]byte)
 	it := client.db.NewIterator(util.BytesPrefix([]byte(prefix)), nil)
 	for it.Next() {
@@ -81,6 +99,8 @@ func (client *leveldbClient) GetMapPrefix(prefix string) (map[string][]byte, err
 
 // GetMapPrefixString 根据前缀查询值，值为string
 func (client *leveldbClient) GetMapPrefixString(prefix string) (map[string]string, error) {
+	client.lock.RLock()
+	defer client.lock.RUnlock()
 	result := make(map[string]string)
 	it := client.db.NewIterator(util.BytesPrefix([]byte(prefix)), nil)
 	for it.Next() {
@@ -93,6 +113,8 @@ func (client *leveldbClient) GetMapPrefixString(prefix string) (map[string]strin
 
 // GetMapRange 根据范围 [Start,Limit) 查询值
 func (client *leveldbClient) GetMapRange(start, end string) (map[string][]byte, error) {
+	client.lock.RLock()
+	defer client.lock.RUnlock()
 	result := make(map[string][]byte)
 	it := client.db.NewIterator(&util.Range{Start: []byte(start), Limit: []byte(end)}, nil)
 	for it.Next() {
@@ -105,6 +127,8 @@ func (client *leveldbClient) GetMapRange(start, end string) (map[string][]byte, 
 
 // GetMapRangeString 根据范围 [Start,Limit) 查询值，值为string
 func (client *leveldbClient) GetMapRangeString(start, end string) (map[string]string, error) {
+	client.lock.RLock()
+	defer client.lock.RUnlock()
 	result := make(map[string]string)
 	it := client.db.NewIterator(&util.Range{Start: []byte(start), Limit: []byte(end)}, nil)
 	for it.Next() {
